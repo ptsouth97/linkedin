@@ -24,18 +24,26 @@ def main():
 
 	# Get dataframe for Udemy students who enrolled in course during a specific time range
 	students = filter_dates(students, enrolled_date)
+	num_students = len(students)
 
 	# Split 'Student Name' column into 'FirstName' and 'LastName'
 	students['Student Name'] = students['Student Name'].str.split(" ", n=1, expand=True)
-	print(students.head)
-
+	
 	# Get LinkedIn connections who connected during that same time range
 	connections = filter_dates(connections, connections_date)
-	print(connections.head)
+	num_connections = len(connections)
 
 	# Merge Udemy Students and LinkedIn Connections based on name
 	merged = connections.merge(students, left_on='FirstName', right_on='Student Name')
-	print(merged.head)
+	#print(merged.head)
+
+	# Calculate the connections to enrollments converstion rate
+	conversion_rate = num_students / num_connections * 100
+
+	# Display conversion rate
+	print('During the promotion {} connections were made on LinkedIn'.format(str(num_connections)))
+	print('During the promotion {} students enrolled on Udemy'.format(str(num_students)))
+	print('For a connection to enrollment conversion rate of {}'.format(str(conversion_rate{.2f}))) 
 
 
 def filter_dates(df, date_column):
