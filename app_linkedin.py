@@ -6,7 +6,7 @@ import datetime as dt
 
 def main():
 	''' Main function for testing'''
-
+	
 	# Read and convert LinkedIn Connections csv to dataframe
 	connections_file_name = 'Connections.csv'
 	connections = pd.read_csv(connections_file_name)
@@ -15,42 +15,74 @@ def main():
 	# Change 'Connected On' column to date time
 	connections['Connected On'] = connections['Connected On'].apply(lambda x: dt.datetime.strptime(x, '%d %b %Y'))
 
-	# Read and convert Udemy Students csv to dataframe
-	students_file_name = 'Students.csv'
-	students = pd.read_csv(students_file_name)
+	# Read and convert Udemy students csv from all classes to dataframe
+	students = make_classes_df()
 	enrolled_date = 'Enrolled'
 
-	# count_bcbas(dataframe)
+	# Make a list of the promotion dates
+	promotions = make_promos_list()
 
-	# Get dataframe for Udemy students who enrolled in course during a specific time range
-	students = filter_dates(students, enrolled_date)
-	num_students = len(students)
+	for promo in promotions:
 
-	# Split 'Student Name' column into 'FirstName' and 'LastName'
-	students['Student Name'] = students['Student Name'].str.split(" ", n=1, expand=True)
+		# Get dataframe for Udemy students who enrolled in course during a specific time range
+		promo_students = filter_dates(students, enrolled_date, promo)
+		num_students = len(promo_students)
+
+		# Get LinkedIn connections who connected during that same time range
+		promo_connections = filter_dates(connections, connections_date, promo)
+		num_connections = len(promo_connections)
+
+		# Merge Udemy Students and LinkedIn Connections based on name
+		# merged = connections.merge(students, left_on='FirstName', right_on='Student Name')
+		#print(merged.head)
+
+		# Calculate the connections to enrollments converstion rate
+		conversion_rate = num_students / num_connections * 100
+
+		# Display conversion rate
+		print('During the promotion {} connections were made on LinkedIn'.format(str(num_connections)))
+		print('During the promotion {} students enrolled on Udemy'.format(str(num_students)))
+		print('For a connection to enrollment conversion rate of {}'.format(str(conversion_rate))) 
+
+
+def make_classes_df():
+	''' reads each Udemy class .csv and appends them to dataframe'''
+
+	# List containing names of the csv files containing Udemy student info
+	classes = ['google_drive.csv', 'celeration.csv', 'wearables.csv']
 	
-	# Get LinkedIn connections who connected during that same time range
-	connections = filter_dates(connections, connections_date)
-	num_connections = len(connections)
+	# Initialize empty dataframe
+	master = pd.DataFrame()
 
-	# Merge Udemy Students and LinkedIn Connections based on name
-	merged = connections.merge(students, left_on='FirstName', right_on='Student Name')
-	#print(merged.head)
+	for a_class in classes:
 
-	# Calculate the connections to enrollments converstion rate
-	conversion_rate = num_students / num_connections * 100
+		# Read the current class's csv and convert to a dataframe
+		students = pd.read_csv(a_class)
+		
+		# Split 'Student Name' column into 'FirstName' and 'LastName'
+		students['Student Name'] = students['Student Name'].str.split(" ", n=1, expand=True)
 
-	# Display conversion rate
-	print('During the promotion {} connections were made on LinkedIn'.format(str(num_connections)))
-	print('During the promotion {} students enrolled on Udemy'.format(str(num_students)))
-	print('For a connection to enrollment conversion rate of {}'.format(str(conversion_rate{.2f}))) 
+		master = master.append(students)
+
+	master = master.reset_index(drop=True)
+	print(master)
+
+	return master
+		
+
+def make_promos_list():
+	'''  Make a list of promotions dates'''
+	
+	promotions = [['2019-12-05 00:00:00.000000', '2019-12-08 09:00:00.000000']]
+
+	return promotions
 
 
-def filter_dates(df, date_column):
+def filter_dates(df, date_column, dates):
 	''' Filters dataframes based on date range'''
 
-	start_date = '2019-12-05 00:00:00.000000'
-	end_date = '2019-12-08 09:00:00.000000'
+	start_date = dates[0]
+	end_date = dates[1]
 
 	filtered_1 = df.loc[df[date_column] >= start_date]
 	filtered = filtered_1.loc[filtered_1[date_column] <= end_date]
@@ -88,17 +120,6 @@ def count_bcbas(df):
 	print(bcba_position)
 
 	print(len(bcba_position))
-
-	return
-
-
-def promo_drive_1(df):
-	''' calculates statistics for promotional drive 1'''
-
-	start_date = '12/05/2019'
-	end_date = '12/08/2019'
-
-	course_name = 'Make Your Own Celeration Chart'
 
 	return
 
