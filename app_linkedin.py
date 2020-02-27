@@ -40,9 +40,11 @@ def main():
 		conversion_rate = num_students / num_connections * 100
 
 		# Display conversion rate
-		print('During the promotion {} connections were made on LinkedIn'.format(str(num_connections)))
-		print('During the promotion {} students enrolled on Udemy'.format(str(num_students)))
-		print('For a connection to enrollment conversion rate of {}'.format(str(conversion_rate))) 
+		print('During the promotion on dates {} to {}:'.format(promo[0], promo[1]))
+		print('{} connections were made on LinkedIn'.format(str(num_connections)))
+		print('{} students enrolled on Udemy'.format(str(num_students)))
+		print('For a connection to enrollment conversion rate of {:.2f}'.format(conversion_rate))
+		print('')
 
 
 def make_classes_df():
@@ -65,7 +67,6 @@ def make_classes_df():
 		master = master.append(students)
 
 	master = master.reset_index(drop=True)
-	print(master)
 
 	return master
 		
@@ -73,7 +74,12 @@ def make_classes_df():
 def make_promos_list():
 	'''  Make a list of promotions dates'''
 	
-	promotions = [['2019-12-05 00:00:00.000000', '2019-12-08 09:00:00.000000']]
+	promotions = [['2019-12-05 09:00:00.000000', '2019-12-08 09:00:00.000000'], \
+                  ['2019-12-08 16:00:00.000000', '2019-12-11 16:00:00.000000'], \
+                  ['2020-01-23 11:00:00.000000', '2020-01-26 11:00:00.000000'], \
+                  ['2020-02-03 11:00:00.000000', '2020-02-06 11:00:00.000000'], \
+                  ['2020-02-10 11:00:00.000000', '2020-02-13 11:00:00.000000'], \
+                  ['2020-02-18 11:00:00.000000', '2020-02-21 11:00:00.000000']]
 
 	return promotions
 
