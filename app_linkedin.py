@@ -22,15 +22,23 @@ def main():
 	# Make a list of the promotion dates
 	promotions = make_promos_list()
 
+	# Get the first element in each list of promotion start/end dates
+	promo_dates = [x[0] for x in promotions]
+
+	# Initialize a blank results dataframe
+	results = pd.DataFrame(index=promo_dates, columns=['Connections', 'Students', 'Conversion'])
+	
 	for promo in promotions:
 
 		# Get dataframe for Udemy students who enrolled in course during a specific time range
 		promo_students = filter_dates(students, enrolled_date, promo)
 		num_students = len(promo_students)
+		results.loc[promo[0], 'Students'] = num_students
 
 		# Get LinkedIn connections who connected during that same time range
 		promo_connections = filter_dates(connections, connections_date, promo)
 		num_connections = len(promo_connections)
+		results.loc[promo[0], 'Connections'] = num_connections
 
 		# Merge Udemy Students and LinkedIn Connections based on name
 		# merged = connections.merge(students, left_on='FirstName', right_on='Student Name')
@@ -38,6 +46,7 @@ def main():
 
 		# Calculate the connections to enrollments converstion rate
 		conversion_rate = num_students / num_connections * 100
+		results.loc[promo[0], 'Conversion'] = conversion_rate
 
 		# Display conversion rate
 		print('During the promotion on dates {} to {}:'.format(promo[0], promo[1]))
@@ -45,6 +54,8 @@ def main():
 		print('{} students enrolled on Udemy'.format(str(num_students)))
 		print('For a connection to enrollment conversion rate of {:.2f}'.format(conversion_rate))
 		print('')
+
+	print(results)
 
 
 def make_classes_df():
