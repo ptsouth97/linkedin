@@ -27,7 +27,7 @@ def main():
 	promo_dates = [x[0] for x in promotions]
 
 	# Initialize a blank results dataframe
-	results = pd.DataFrame(index=promo_dates, columns=['Connections', 'Students', 'Conversion'])
+	results = pd.DataFrame(index=promo_dates, columns=['Connections', 'Students', 'Conversion', 'Course'])
 	
 	for promo in promotions:
 
@@ -35,6 +35,9 @@ def main():
 		promo_students = filter_dates(students, enrolled_date, promo)
 		num_students = len(promo_students)
 		results.loc[promo[0], 'Students'] = num_students
+
+		# Add the course name
+		results.loc[promo[0], 'Course'] = promo[2]
 
 		# Get LinkedIn connections who connected during that same time range
 		promo_connections = filter_dates(connections, connections_date, promo)
@@ -94,12 +97,12 @@ def make_classes_df():
 def make_promos_list():
 	'''  Make a list of promotions dates'''
 	
-	promotions = [['2019-12-05 09:00:00.000000', '2019-12-08 09:00:00.000000'], \
-                  ['2019-12-08 16:00:00.000000', '2019-12-11 16:00:00.000000'], \
-                  ['2020-01-23 11:00:00.000000', '2020-01-26 11:00:00.000000'], \
-                  ['2020-02-03 11:00:00.000000', '2020-02-06 11:00:00.000000'], \
-                  ['2020-02-10 11:00:00.000000', '2020-02-13 11:00:00.000000'], \
-                  ['2020-02-18 11:00:00.000000', '2020-02-21 11:00:00.000000']]
+	promotions = [['2019-12-05 09:00:00.000000', '2019-12-08 09:00:00.000000', 'celeration'], \
+                  ['2019-12-08 16:00:00.000000', '2019-12-11 16:00:00.000000', 'drive'], \
+                  ['2020-01-23 11:00:00.000000', '2020-01-26 11:00:00.000000', 'drive'], \
+                  ['2020-02-03 11:00:00.000000', '2020-02-06 11:00:00.000000', 'celeration'], \
+                  ['2020-02-10 11:00:00.000000', '2020-02-13 11:00:00.000000', 'wearables'], \
+                  ['2020-02-18 11:00:00.000000', '2020-02-21 11:00:00.000000', 'drive']]
 
 	return promotions
 
