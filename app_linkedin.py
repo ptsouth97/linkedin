@@ -2,6 +2,7 @@
 
 import pandas as pd
 import datetime as dt
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -12,7 +13,7 @@ def main():
 	connections = pd.read_csv(connections_file_name)
 	connections_date = 'Connected On'
 	
-	# Change 'Connected On' column to date time
+	# Change 'Connected On' column to date time format
 	connections['Connected On'] = connections['Connected On'].apply(lambda x: dt.datetime.strptime(x, '%d %b %Y'))
 
 	# Read and convert Udemy students csv from all classes to dataframe
@@ -40,22 +41,30 @@ def main():
 		num_connections = len(promo_connections)
 		results.loc[promo[0], 'Connections'] = num_connections
 
-		# Merge Udemy Students and LinkedIn Connections based on name
-		# merged = connections.merge(students, left_on='FirstName', right_on='Student Name')
-		#print(merged.head)
-
 		# Calculate the connections to enrollments converstion rate
 		conversion_rate = num_students / num_connections * 100
 		results.loc[promo[0], 'Conversion'] = conversion_rate
 
-		# Display conversion rate
-		print('During the promotion on dates {} to {}:'.format(promo[0], promo[1]))
-		print('{} connections were made on LinkedIn'.format(str(num_connections)))
-		print('{} students enrolled on Udemy'.format(str(num_students)))
-		print('For a connection to enrollment conversion rate of {:.2f}'.format(conversion_rate))
-		print('')
-
 	print(results)
+	make_graph(results)
+
+	print('Good bye...')
+
+
+def make_graph(df):
+	''' displays graph of results'''
+
+	# Slice the conversion column
+	df = df['Conversion']
+
+	# Make the plot	
+	df.plot(linestyle='none', marker='o')
+	plt.title('LinkedIn Promotion Student Conversions')
+	plt.xlabel('start date of promotion')
+	plt.ylabel('conversion percentage during promotion (%)')
+	plt.show()		
+
+	return
 
 
 def make_classes_df():
