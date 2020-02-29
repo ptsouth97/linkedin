@@ -97,6 +97,7 @@ def make_classes_df():
 def make_promos_list():
 	'''  Make a list of promotions dates'''
 	
+	# list [promo start date, promo end date, course title]
 	promotions = [['2019-12-05 09:00:00.000000', '2019-12-08 09:00:00.000000', 'celeration'], \
                   ['2019-12-08 16:00:00.000000', '2019-12-11 16:00:00.000000', 'drive'], \
                   ['2020-01-23 11:00:00.000000', '2020-01-26 11:00:00.000000', 'drive'], \
