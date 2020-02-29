@@ -27,7 +27,8 @@ def main():
 	promo_dates = [x[0] for x in promotions]
 
 	# Initialize a blank results dataframe
-	results = pd.DataFrame(index=promo_dates, columns=['Connections', 'Students', 'Conversion', 'Course'])
+	columns=['Connections', 'Students', 'Conversion', 'Course']
+	results = pd.DataFrame(index=promo_dates, columns=columns)
 	
 	for promo in promotions:
 
@@ -49,22 +50,26 @@ def main():
 		results.loc[promo[0], 'Conversion'] = conversion_rate
 
 	print(results)
-	make_graph(results)
 
+	for column in columns:
+
+		make_graph(results, column)
+
+	# End of application
 	print('Good bye...')
 
 
-def make_graph(df):
+def make_graph(df, col):
 	''' displays graph of results'''
 
 	# Slice the conversion column
-	df = df['Conversion']
+	df = df[col]
 
 	# Make the plot	
 	df.plot(linestyle='none', marker='o')
-	plt.title('LinkedIn Promotion Student Conversions')
+	plt.title('LinkedIn Promotion')
 	plt.xlabel('start date of promotion')
-	plt.ylabel('conversion percentage during promotion (%)')
+	plt.ylabel(col)
 	plt.show()		
 
 	return
