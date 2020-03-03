@@ -28,12 +28,9 @@ def main():
 	# Get the first element in each list of promotion start/end dates
 	promo_dates = [x[0] for x in promotions]
 
-	# Convert promo dates to datetime
-	promo_dt = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in promo_dates]
-	print(promo_dt)
 	# Initialize a blank results dataframe
 	columns=['Connections', 'Students', 'Conversion', 'Course']
-	results = pd.DataFrame(index=promo_dt, columns=columns)
+	results = pd.DataFrame(index=promo_dates, columns=columns)
 	
 	for promo in promotions:
 
@@ -58,44 +55,20 @@ def main():
 
 	for column in columns:
 
-		make_graph(results, column, promo_dt)
+		make_graph(results, column)
 
 	# End of application
 	print('Good bye...')
 
 
-def make_graph(df, col, dates):
+def make_graph(df, col):
 	''' displays graph of results'''
 
 	# Slice the appropriate column
 	df = df[col]
-	y = df.values
-	print(y)
-	# Convert datetimes to days
-	# (df.index - df['days']).dt.days
-	print(df)
-
-	# Get the index values
-	X = dates
-	num = len(X)
-	print(X[0])
-	print(type(X[0]))
-
-	# Create the regressor: reg
-	reg = LinearRegression()
-	print(X[5]-X[0])
-	# Create the prediction space
-	prediction_space = np.linspace(0, 75).reshape(-1,1)
-
-	# Fit the model to the data
-	reg.fit(X, y)
-
-	# Compute predictions over the prediction space: y_pred
-	y_pred = reg.predict(prediction_space)
-
+	
 	# Make the plot	
 	df.plot(linestyle='none', marker='o')
-	plt.plot(prediction_space, y_pred, color='black', linewidth=3)
 	plt.title('LinkedIn Promotion')
 	plt.xlabel('start date of promotion')
 	plt.ylabel(col)
