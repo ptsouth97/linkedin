@@ -3,6 +3,8 @@
 import pandas as pd
 import datetime as dt
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import numpy as np
 
 
 def main():
@@ -26,9 +28,12 @@ def main():
 	# Get the first element in each list of promotion start/end dates
 	promo_dates = [x[0] for x in promotions]
 
+	# Convert promo dates to datetime
+	promo_dt = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in promo_dates]
+	print(promo_dt)
 	# Initialize a blank results dataframe
 	columns=['Connections', 'Students', 'Conversion', 'Course']
-	results = pd.DataFrame(index=promo_dates, columns=columns)
+	results = pd.DataFrame(index=promo_dt, columns=columns)
 	
 	for promo in promotions:
 
@@ -53,20 +58,44 @@ def main():
 
 	for column in columns:
 
-		make_graph(results, column)
+		make_graph(results, column, promo_dt)
 
 	# End of application
 	print('Good bye...')
 
 
-def make_graph(df, col):
+def make_graph(df, col, dates):
 	''' displays graph of results'''
 
-	# Slice the conversion column
+	# Slice the appropriate column
 	df = df[col]
+	y = df.values
+	print(y)
+	# Convert datetimes to days
+	# (df.index - df['days']).dt.days
+	print(df)
+
+	# Get the index values
+	X = dates
+	num = len(X)
+	print(X[0])
+	print(type(X[0]))
+
+	# Create the regressor: reg
+	reg = LinearRegression()
+	print(X[5]-X[0])
+	# Create the prediction space
+	prediction_space = np.linspace(0, 75).reshape(-1,1)
+
+	# Fit the model to the data
+	reg.fit(X, y)
+
+	# Compute predictions over the prediction space: y_pred
+	y_pred = reg.predict(prediction_space)
 
 	# Make the plot	
 	df.plot(linestyle='none', marker='o')
+	plt.plot(prediction_space, y_pred, color='black', linewidth=3)
 	plt.title('LinkedIn Promotion')
 	plt.xlabel('start date of promotion')
 	plt.ylabel(col)
@@ -103,12 +132,12 @@ def make_promos_list():
 	'''  Make a list of promotions dates'''
 	
 	# list [promo start date, promo end date, course title]
-	promotions = [['2019-12-05 09:00:00.000000', '2019-12-08 09:00:00.000000', 'celeration'], \
-                  ['2019-12-08 16:00:00.000000', '2019-12-11 16:00:00.000000', 'drive'], \
-                  ['2020-01-23 11:00:00.000000', '2020-01-26 11:00:00.000000', 'drive'], \
-                  ['2020-02-03 11:00:00.000000', '2020-02-06 11:00:00.000000', 'celeration'], \
-                  ['2020-02-10 11:00:00.000000', '2020-02-13 11:00:00.000000', 'wearables'], \
-                  ['2020-02-18 11:00:00.000000', '2020-02-21 11:00:00.000000', 'drive']]
+	promotions = [['2019-12-05 09:00:00', '2019-12-08 09:00:00', 'celeration'], \
+                  ['2019-12-08 16:00:00', '2019-12-11 16:00:00', 'drive'], \
+                  ['2020-01-23 11:00:00', '2020-01-26 11:00:00', 'drive'], \
+                  ['2020-02-03 11:00:00', '2020-02-06 11:00:00', 'celeration'], \
+                  ['2020-02-10 11:00:00', '2020-02-13 11:00:00', 'wearables'], \
+                  ['2020-02-18 11:00:00', '2020-02-21 11:00:00', 'drive']]
 
 	return promotions
 
