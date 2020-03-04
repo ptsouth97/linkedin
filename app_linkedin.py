@@ -10,6 +10,16 @@ import numpy as np
 def main():
 	''' Main function for testing'''
 	
+	# perform_analysis()
+
+	# regression testing
+	results = pd.read_csv('results.csv', index_col=0)
+	regression(results)
+	
+
+def perform_analysis():
+	''' Main loop for performing analysis'''
+
 	# Read and convert LinkedIn Connections csv to dataframe
 	connections_file_name = 'Connections.csv'
 	connections = pd.read_csv(connections_file_name)
@@ -55,6 +65,7 @@ def main():
 		results.loc[promo[0], 'Conversion'] = conversion_rate
 
 	print(results)
+	results.to_csv('results.csv')
 
 	for column in columns:
 
@@ -62,6 +73,14 @@ def main():
 
 	# End of application
 	print('Good bye...')
+
+
+def regression(df):
+	''' performs linear regression on the results df'''
+
+	print(df)
+
+	return
 
 
 def make_graph(df, col, dates):
