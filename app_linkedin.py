@@ -28,6 +28,9 @@ def main():
 	# Get the first element in each list of promotion start/end dates
 	promo_dates = [x[0] for x in promotions]
 
+	# Convert promo date strings to datetime values
+	# promo_dates = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in promo_dates]
+
 	# Initialize a blank results dataframe
 	columns=['Connections', 'Students', 'Conversion', 'Course']
 	results = pd.DataFrame(index=promo_dates, columns=columns)
@@ -55,14 +58,18 @@ def main():
 
 	for column in columns:
 
-		make_graph(results, column)
+		make_graph(results, column, promo_dates)
 
 	# End of application
 	print('Good bye...')
 
 
-def make_graph(df, col):
+def make_graph(df, col, dates):
 	''' displays graph of results'''
+
+	# Split the string datetimes at the space
+	dates = [ date.split() for date in dates ]
+	dates = [ date[0] for date in dates ]
 
 	# Slice the appropriate column
 	df = df[col]
@@ -72,6 +79,7 @@ def make_graph(df, col):
 	plt.title('LinkedIn Promotion')
 	plt.xlabel('start date of promotion')
 	plt.ylabel(col)
+	plt.xticks(np.arange(len(df)), dates, rotation=45)
 	plt.show()		
 
 	return
