@@ -65,6 +65,7 @@ def perform_analysis():
 		results.loc[promo[0], 'Conversion'] = conversion_rate
 
 	print(results)
+	print(type(results.index.values))
 	results.to_csv('results.csv')
 
 	for column in columns:
@@ -79,6 +80,29 @@ def regression(df):
 	''' performs linear regression on the results df'''
 
 	print(df)
+	X = df.index.values
+	X = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in X]
+	X = np.asarray([(x - X[0]).days for x in X]).reshape(-1, 1)
+	#X = [dt.datetime.days(x) for x in X]
+
+	y = df['Conversion']
+	print(X)
+	print(type(X[0]))
+	# Create the regressor: reg
+	reg = LinearRegression()
+
+	# Create the prediction space
+	prediction_space = np.linspace(min(X), max(X)).reshape(-1,1)
+
+	# Fit the model to the data
+	reg.fit(X, y)
+
+	# Compute predictions over the prediction space: y_pred
+	y_pred = reg.predict(prediction_space)
+
+	# Plot regression line
+	plt.plot(prediction_space, y_pred, color='black', linewidth=3)
+	plt.show()
 
 	return
 
