@@ -71,22 +71,22 @@ def perform_analysis():
 	
 	for column in columns:
 
-		make_graph(results, column, promo_dates)
+		#make_graph(results, column, promo_dates)
+		regression(results, column)
 
 	# End of application
 	print('Good bye...')
 
 
-def regression(df):
+def regression(df, col):
 	''' performs linear regression on the results df'''
 
-	print(df)
 	X = df.index.values
 	X = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in X]
 	X = np.asarray([(x - X[0]).days for x in X]).reshape(-1, 1)
 
 	# Get conversion rate values
-	y = df['Conversion']
+	y = df[col]
 
 	# Create the regressor: reg
 	reg = LinearRegression()
@@ -102,9 +102,9 @@ def regression(df):
 
 	# Plot the data
 	plt.plot(X, y, linestyle='none', marker='.')
-	plt.title('Connection to Student Conversion Rate')
+	plt.title(col)
 	plt.xlabel('Days since promotions began')
-	plt.ylabel('Conversion rate (%)')
+	plt.ylabel(col)
 
 	# Plot regression line
 	plt.plot(prediction_space, y_pred, color='black', linewidth=1)
