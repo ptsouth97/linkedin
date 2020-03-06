@@ -38,9 +38,6 @@ def perform_analysis():
 	# Get the first element in each list of promotion start/end dates
 	promo_dates = [x[0] for x in promotions]
 
-	# Convert promo date strings to datetime values
-	# promo_dates = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in promo_dates]
-
 	# Initialize a blank results dataframe
 	columns=['Connections', 'Students', 'Conversion', 'Course']
 	results = pd.DataFrame(index=promo_dates, columns=columns)
@@ -83,11 +80,10 @@ def regression(df):
 	X = df.index.values
 	X = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in X]
 	X = np.asarray([(x - X[0]).days for x in X]).reshape(-1, 1)
-	#X = [dt.datetime.days(x) for x in X]
 
+	# Get conversion rate values
 	y = df['Conversion']
-	print(X)
-	print(type(X[0]))
+
 	# Create the regressor: reg
 	reg = LinearRegression()
 
@@ -105,6 +101,9 @@ def regression(df):
 
 	# Plot the data
 	plt.plot(X, y, linestyle='none', marker='.')
+	plt.title('Connection to Student Conversion Rate')
+	plt.xlabel('Days since promotions began')
+	plt.ylabel('Conversion rate (%)')
 	plt.show()
 
 	return
