@@ -101,7 +101,10 @@ def regression(df):
 	y_pred = reg.predict(prediction_space)
 
 	# Plot regression line
-	plt.plot(prediction_space, y_pred, color='black', linewidth=3)
+	plt.plot(prediction_space, y_pred, color='black', linewidth=1)
+
+	# Plot the data
+	plt.plot(X, y, linestyle='none', marker='.')
 	plt.show()
 
 	return
