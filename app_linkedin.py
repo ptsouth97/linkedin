@@ -10,11 +10,11 @@ import numpy as np
 def main():
 	''' Main function for testing'''
 	
-	# perform_analysis()
+	perform_analysis()
 
 	# regression testing
-	results = pd.read_csv('results.csv', index_col=0)
-	regression(results)
+	#results = pd.read_csv('results.csv', index_col=0)
+	#regression(results)
 	
 
 def perform_analysis():
@@ -32,16 +32,17 @@ def perform_analysis():
 	students = make_classes_df()
 	enrolled_date = 'Enrolled'
 
-	# Make a list of the promotion dates
+	# Make a list of the promotion start and end dates as well as name of course
 	promotions = make_promos_list()
 
-	# Get the first element in each list of promotion start/end dates
+	# Get the first element in each list of promotion (i.e., the start date)
 	promo_dates = [x[0] for x in promotions]
 
 	# Initialize a blank results dataframe
 	columns=['Connections', 'Students', 'Conversion', 'Course']
 	results = pd.DataFrame(index=promo_dates, columns=columns)
 	
+	# Iterate over the promotions list and fill the 'results' df by filtering the appropriate info
 	for promo in promotions:
 
 		# Get dataframe for Udemy students who enrolled in course during a specific time range
@@ -65,6 +66,9 @@ def perform_analysis():
 	print(type(results.index.values))
 	results.to_csv('results.csv')
 
+	# Drop last column ('Course') because it can't be graphed
+	columns.pop()
+	
 	for column in columns:
 
 		make_graph(results, column, promo_dates)
@@ -96,14 +100,14 @@ def regression(df):
 	# Compute predictions over the prediction space: y_pred
 	y_pred = reg.predict(prediction_space)
 
-	# Plot regression line
-	plt.plot(prediction_space, y_pred, color='black', linewidth=1)
-
 	# Plot the data
 	plt.plot(X, y, linestyle='none', marker='.')
 	plt.title('Connection to Student Conversion Rate')
 	plt.xlabel('Days since promotions began')
 	plt.ylabel('Conversion rate (%)')
+
+	# Plot regression line
+	plt.plot(prediction_space, y_pred, color='black', linewidth=1)
 	plt.show()
 
 	return
@@ -115,7 +119,7 @@ def make_graph(df, col, dates):
 	# Split the string datetimes at the space
 	dates = [ date.split() for date in dates ]
 	dates = [ date[0] for date in dates ]
-
+	print('The column is ' +col)
 	# Slice the appropriate column
 	df = df[col]
 	
