@@ -66,13 +66,17 @@ def perform_analysis():
 	print(type(results.index.values))
 	results.to_csv('results.csv')
 
+	# Group students by course
+	courses = results.groupby(['Course']).sum()
+	print(courses)
+
 	# Drop last column ('Course') because it can't be graphed
 	columns.pop()
 	
 	for column in columns:
 
-		#make_graph(results, column, promo_dates)
-		regression(results, column)
+		ln = make_graph(results, column, promo_dates)
+		#regression(results, column)
 
 	# End of application
 	print('Good bye...')
