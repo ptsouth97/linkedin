@@ -68,14 +68,20 @@ def perform_analysis():
 
 	# Group students by course
 	courses = results.groupby(['Course']).sum()
-	print(courses)
 
 	# Drop last column ('Course') because it can't be graphed
 	columns.pop()
 	
 	for column in columns:
+		
+		# Plot the data grouped by course
+		courses[column].plot(kind='bar')
+		plt.xlabel('Course')
+		plt.ylabel(column)
+		plt.show()
 
-		ln = make_graph(results, column, promo_dates)
+		# Plot the non-grouped data
+		make_graph(results, column, promo_dates)
 		#regression(results, column)
 
 	# End of application
@@ -86,8 +92,8 @@ def regression(df, col):
 	''' performs linear regression on the results df'''
 
 	X = df.index.values
-	X = [dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in X]
-	X = np.asarray([(x - X[0]).days for x in X]).reshape(-1, 1)
+	X = [ dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in X ]
+	X = np.asarray([ (x - X[0]).days for x in X ]).reshape(-1, 1)
 
 	# Get conversion rate values
 	y = df[col]
